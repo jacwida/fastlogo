@@ -23,7 +23,7 @@ function App() {
           <Buttons active={active} setActive={setActive} />
         </div>
         <div className=" flex-1 flex">
-          <div className="w-4/12 mb-16 overflow-y-auto border-r">
+          <div className="3-4/12 mb-16 overflow-y-auto border-r">
             {active === 0 ? <IconController /> : <BackgroundController />}
           </div>
 

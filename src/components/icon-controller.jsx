@@ -1,10 +1,45 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppColorPicker } from "./color-picker";
+import { UpdateStorageContext } from "../context/update-storage-context";
 
 const IconController = () => {
-  const [size, setSize] = useState(200);
-  const [rotate, setRotate] = useState(0);
-  const [borderWidth, setBorderWidth] = useState(10);
+  const storageValue = JSON.parse(localStorage.getItem("value"));
+
+  const [size, setSize] = useState(storageValue ? storageValue?.iconSize : 300);
+  const [rotate, setRotate] = useState(
+    storageValue ? storageValue?.iconRotate : 0
+  );
+  const [fill, setFill] = useState(storageValue ? storageValue?.iconFill : 0);
+  const [borderWidth, setBorderWidth] = useState(
+    storageValue ? storageValue?.IconBorderWidth : 10
+  );
+  const [borderColor, setBorderColor] = useState(
+    storageValue ? storageValue?.iconBorderColor : "#fff"
+  );
+  const [fillColor, setFillColor] = useState(
+    storageValue ? storageValue?.iconFillColor : "#fff"
+  );
+  const [icon, setIcon] = useState(
+    storageValue ? storageValue?.icon : "Activity"
+  );
+
+  const { updateStorage, setUpdateStorage } = useContext(UpdateStorageContext);
+
+  useEffect(() => {
+    const updatedValue = {
+      ...storageValue,
+      iconSize: size,
+      IconBorderWidth: borderWidth,
+      iconRotate: rotate,
+      iconBorderColor: borderColor,
+      iconFillColor: fillColor,
+      iconFill: fill,
+      icon: icon,
+    };
+
+    setUpdateStorage(updatedValue);
+    localStorage.setItem("value", JSON.stringify(updatedValue));
+  }, [size, rotate, borderColor, fillColor, borderWidth, icon]);
 
   return (
     <div className="w-full  flex flex-col p-3 gap-8 overflow-auto h-screen">
@@ -22,7 +57,7 @@ const IconController = () => {
         <input
           type="range"
           min={0}
-          max="500"
+          max="300"
           value={size}
           onChange={(e) => setSize(e.target.value)}
           className="range"
@@ -31,7 +66,7 @@ const IconController = () => {
       <div className="space-y-2">
         <div className="flex justify-between items-center">
           <p className="text-sm">Rotate</p>
-          <p className="text-xs">{rotate}</p>
+          <p className="text-xs">{rotate} °</p>
         </div>
 
         <input
@@ -63,7 +98,31 @@ const IconController = () => {
           <p className="text-sm">Border Color</p>
         </div>
 
-        <AppColorPicker />
+        <AppColorPicker selectedColor={setBorderColor} defaultColor="#ffffff" />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <p className="text-sm">Fill opacity</p>
+          <p className="text-xs">{fill} %</p>
+        </div>
+
+        <input
+          type="range"
+          min={0}
+          max="100"
+          value={fill}
+          onChange={(e) => setFill(e.target.value)}
+          className="range"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex justify-between items-center">
+          <p className="text-sm">Fill Color</p>
+        </div>
+
+        <AppColorPicker selectedColor={setFillColor} defaultColor="#ffffff" />
       </div>
 
       <div className="my-8"></div>

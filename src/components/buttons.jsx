@@ -1,5 +1,3 @@
-"use client";
-
 const Buttons = ({ setActive, active }) => {
   const BUTTONS = ["Icon", "BackGround"];
 
